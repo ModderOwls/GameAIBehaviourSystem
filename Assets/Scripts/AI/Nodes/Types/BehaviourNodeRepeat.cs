@@ -10,6 +10,8 @@ public class BehaviourNodeRepeat : BehaviourDecoratorNode
 
     protected override NodeState OnUpdate()
     {
+        name = "Repeat:<br>" + child.name;
+
         child.Update();
         return NodeState.Running;
     }

@@ -22,12 +22,20 @@ public class PlayerController : MonoBehaviour
     public Vector2 inputMove;
 
 
+    [Header("Fighting")]
+
+    public float health = 5;
+    public float maxHealth = 5;
+
+
     [Header("Values")]
 
     public Vector3 velocity;
     public Vector3 groundNormal;
     Vector3 lastPhysicsPosition;
     bool grounded;
+
+    int invincibilityFrames;
 
 
     [Header("References")]
@@ -65,10 +73,13 @@ public class PlayerController : MonoBehaviour
         Move();
 
         DetectRamp();
+
+        Invincibility();
     }
 
     void Update()
     {
+        //Interpolation, as CharacterController itself does not offer it. (and I am picky about locked framerates).
         //Why does unity not have a physics fraction method like godot??
         float inbetweenPhysics = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
         interpModel.position = Vector3.Lerp(lastPhysicsPosition, transform.position, inbetweenPhysics);
@@ -114,6 +125,38 @@ public class PlayerController : MonoBehaviour
             groundNormal = rayGround.normal;
             transform.position = rayGround.point + transform.up * (control.height / 2);
         }
+    }
+
+    void Invincibility()
+    {
+        if (invincibilityFrames > 0)
+        {
+            invincibilityFrames--;
+
+            Time.timeScale = ((51-invincibilityFrames) / 51 * .9f) + .1f;
+        }
+    }
+
+    public void DamagePlayer(float damage)
+    {
+        if (invincibilityFrames > 0) return;
+
+        //1 second in ticks.
+        invincibilityFrames = 50;
+
+        health -= damage;
+
+        if (health <= 0)
+        {
+            health = 0;
+
+            Death();
+        }
+    }
+
+    void Death()
+    {
+        this.enabled = false;
     }
 
     public void InputMove(InputAction.CallbackContext context)

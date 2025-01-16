@@ -6,6 +6,8 @@ public class BehaviourDebugNode : BehaviourNode
 {
     public int debugID;
 
+    public override string name { get; set; } = "Debug";
+
     public BehaviourDebugNode(int debugID)
     {
         this.debugID = debugID;

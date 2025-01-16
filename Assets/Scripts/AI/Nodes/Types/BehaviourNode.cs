@@ -7,6 +7,8 @@ public abstract class BehaviourNode
     public bool started;
     [SerializeField] NodeState state;
 
+    public virtual string name { get; set; }
+
     public enum NodeState
     {
         Running,

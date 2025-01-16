@@ -17,6 +17,8 @@ public class BehaviourNodeSequence : BehaviourCompositeNode
     {
         if (children.Count >= 1)
         {
+            name = "Sequence " + current + ":<br>" + children[current].name;
+
             switch (children[current].Update())
             {
                 case NodeState.Running:
