@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BehaviourNodeFollow : BehaviourActionNode
+public class BehaviourNodeFollow : BehaviourNode
 {
     public override string name { get; set; } = "Follow";
 

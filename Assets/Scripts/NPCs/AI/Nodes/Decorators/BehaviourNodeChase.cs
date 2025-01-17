@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BehaviourNodeChase : BehaviourActionNode
+public class BehaviourNodeChase : BehaviourNode
 {
     public override string name { get; set; } = "Chase";
 

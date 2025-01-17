@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BehaviourNodePatrol : BehaviourActionNode
+public class BehaviourNodePatrol : BehaviourNode
 {
     public override string name { get; set; } = "Patrol";
 

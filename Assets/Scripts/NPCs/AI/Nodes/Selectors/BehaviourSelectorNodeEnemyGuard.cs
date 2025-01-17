@@ -63,7 +63,7 @@ public class BehaviourSelectorNodeEnemyGuard : BehaviourCompositeNode
                 {
                     int attackLoopLength = 2;
                     //Gives a chance to throw glue.
-                    attackLoopLength += Mathf.RoundToInt(Random.value * .3f);
+                    attackLoopLength += Mathf.RoundToInt(Random.value * .6f);
                     current = children.Count - attackLoopLength;
                 }
                 break;
