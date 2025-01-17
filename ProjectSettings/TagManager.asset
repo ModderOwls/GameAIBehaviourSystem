@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Weapon
   - Projectile
+  - Smoke
+  - Obstacles
+  - Enemy
+  - Ally
+  - Glue
   layers:
   - Default
   - TransparentFX
@@ -14,9 +19,9 @@ TagManager:
   - Water
   - UI
   - Player
-  - Ground
+  - NPCs
   - Projectile
-  - 
+  - Obstacles
   - 
   - 
   - 

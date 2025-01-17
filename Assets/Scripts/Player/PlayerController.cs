@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 //Recycled script from older project.
 public class PlayerController : MonoBehaviour
@@ -15,6 +16,7 @@ public class PlayerController : MonoBehaviour
     public float linearDrag;
 
     public float fallSpeed;
+    public float rotateSpeed;
 
 
     [Header("Input")]
@@ -83,6 +85,9 @@ public class PlayerController : MonoBehaviour
         //Why does unity not have a physics fraction method like godot??
         float inbetweenPhysics = (Time.time - Time.fixedTime) / Time.fixedDeltaTime;
         interpModel.position = Vector3.Lerp(lastPhysicsPosition, transform.position, inbetweenPhysics);
+
+        Vector3 newDirection = Vector3.RotateTowards(interpModel.forward, new Vector3(control.velocity.x, 0, control.velocity.z), rotateSpeed * Time.deltaTime, 0.0f);
+        interpModel.rotation = Quaternion.LookRotation(newDirection);
     }
 
     void Move()
@@ -129,11 +134,12 @@ public class PlayerController : MonoBehaviour
 
     void Invincibility()
     {
+        //Ensures you dont get hit multiple times and slows time down.
         if (invincibilityFrames > 0)
         {
             invincibilityFrames--;
 
-            Time.timeScale = ((51-invincibilityFrames) / 51 * .9f) + .1f;
+            Time.timeScale = ((51 - (float)invincibilityFrames) / 51 * .9f) + .1f;
         }
     }
 
@@ -156,11 +162,37 @@ public class PlayerController : MonoBehaviour
 
     void Death()
     {
-        this.enabled = false;
+        enabled = false;
+
+        StartCoroutine(DeathTimer(2));
     }
 
     public void InputMove(InputAction.CallbackContext context)
     {
         inputMove = context.ReadValue<Vector2>();
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(other);
+        if (other.CompareTag("Glue"))
+        {
+            maxSpeed = 2;
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Glue"))
+        {
+            maxSpeed = 4;
+        }
+    }
+
+    IEnumerator DeathTimer(float seconds)
+    {
+        yield return new WaitForSecondsRealtime(seconds);
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

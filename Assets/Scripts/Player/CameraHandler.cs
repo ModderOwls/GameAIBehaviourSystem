@@ -7,6 +7,7 @@ public class CameraHandler : MonoBehaviour
     [Header("Settings")]
 
     public float smoothing;
+    public Vector3 offset = new Vector3(0, 6, -6.5f);
 
 
     [Header("References")]
@@ -16,6 +17,6 @@ public class CameraHandler : MonoBehaviour
 
     void Update()
     {
-        transform.position = Vector3.Lerp(transform.position, player.position + new Vector3(0, 6, -4.75f), Time.deltaTime * smoothing);
+        transform.position = Vector3.Lerp(transform.position, player.position + offset, Time.deltaTime * smoothing);
     }
 }
