@@ -4,33 +4,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// BlackBoard interactions -
+/// GET: Weapon (Weapon)
+/// </summary>
 public class BehaviourNodeAttack : BehaviourActionNode
 {
     public override string name { get; set; } = "Attacking";
 
-    Transform owner;
+    BlackBoard blackBoard;
 
     Weapon weapon;
 
 
-    public BehaviourNodeAttack(Transform owner)
+    public BehaviourNodeAttack(BlackBoard blackBoard)
     {
-        this.owner = owner;
+        this.blackBoard = blackBoard;
     }
 
     protected override void OnStart()
     {
-        //Not a great solution, but works without ruining modularity.
-        for (int i = 0; i < owner.childCount; ++i)
-        {
-            Transform child = owner.GetChild(i);
-            if (child.CompareTag("Weapon"))
-            {
-                weapon = child.GetComponent<Weapon>();
-            }
-        }
+        weapon = blackBoard.GetValue<Weapon>("Weapon");
 
-        weapon.Attack();
+        weapon?.Attack();
     }
 
     protected override void OnStop() { }

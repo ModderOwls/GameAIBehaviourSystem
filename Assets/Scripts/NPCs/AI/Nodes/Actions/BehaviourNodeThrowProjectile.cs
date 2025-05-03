@@ -5,6 +5,9 @@ using UnityEngine;
 
 /// <summary>
 /// Behaviour node that throws a projectile at an area.
+/// 
+/// BlackBoard interactions - 
+/// GET: Projectile (Projectile), Target (Transform)
 /// </summary>
 public class BehaviourNodeThrowProjectile : BehaviourActionNode
 {
@@ -15,18 +18,22 @@ public class BehaviourNodeThrowProjectile : BehaviourActionNode
 
     Projectile projectile;
 
+    BlackBoard blackBoard;
+
     float timer;
 
-    public BehaviourNodeThrowProjectile(Transform owner, Transform target, Projectile projectile)
+    public BehaviourNodeThrowProjectile(Transform owner, BlackBoard blackBoard)
     {
         this.owner = owner;
-        this.target = target;
-        this.projectile = projectile;
+        this.blackBoard = blackBoard;
     }
 
     protected override void OnStart()
     {
         timer = 0;
+
+        projectile = blackBoard.GetValue<Projectile>("Projectile");
+        target = blackBoard.GetValue<Transform>("Target");
 
         if (projectile == null) return;
 

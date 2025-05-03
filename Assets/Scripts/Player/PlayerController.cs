@@ -174,7 +174,6 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other);
         if (other.CompareTag("Glue"))
         {
             maxSpeed = 2;

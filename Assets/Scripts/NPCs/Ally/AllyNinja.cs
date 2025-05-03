@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.InputSystem.OnScreen.OnScreenStick;
 
 public class AllyNinja : NpcAI
 {
@@ -19,6 +18,22 @@ public class AllyNinja : NpcAI
 
         behaviour = new BehaviourTree();
 
-        behaviour.startNode = new BehaviourSelectorNodeAllyNinja(navAgent, player, projectile);
+        BlackBoard blackBoard = new BlackBoard();
+        BehaviourSelectorNode selector = new BehaviourSelectorNode();
+
+        blackBoard.SetValue("Projectile", projectile);
+        blackBoard.SetValue("Target", player.transform);
+
+        blackBoard.SetValue("LayerEnemy", (LayerMask)LayerMask.GetMask("NPCs"));
+
+        //Detects for the enemy Guard, if it finds it continues, otherwise follows infinitely.
+        selector.children.Add(new BehaviourConditionalNodeDetectEnemy(navAgent, "Enemy", blackBoard, new BehaviourNodeFollow(navAgent, player.transform)));
+        
+        //Hide and throw a smoke bomb.
+        selector.children.Add(new BehaviourNodeHide(navAgent, "Target", blackBoard));
+        selector.children.Add(new BehaviourNodeThrowProjectile(navAgent.transform, blackBoard));
+        selector.children.Add(new BehaviourFailNode()); //Reset the behaviour.
+
+        behaviour.startNode = selector;
     }
 }

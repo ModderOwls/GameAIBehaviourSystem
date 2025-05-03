@@ -39,8 +39,8 @@ public class BehaviourSelectorNodeAllyNinja : BehaviourCompositeNode
         hideObject = new GameObject().transform;
 
         children.Add(new BehaviourNodeFollow(agent, player.transform));
-        children.Add(new BehaviourNodeHide(agent, hideObject));
-        children.Add(new BehaviourNodeThrowProjectile(agent.transform, player.transform, projectile));
+        //children.Add(new BehaviourNodeHide(agent, hideObject));
+        //children.Add(new BehaviourNodeThrowProjectile(agent.transform, player.transform, projectile));
         children.Add(new BehaviourFailNode()); //Reset the behaviour.
 
         layerNPCs = LayerMask.GetMask("NPCs");

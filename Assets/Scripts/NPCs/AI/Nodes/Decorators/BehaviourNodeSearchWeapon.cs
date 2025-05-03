@@ -4,18 +4,25 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// BlackBoard interactions - 
+/// SET: Weapon (Weapon)
+/// </summary>
 public class BehaviourNodeSearchWeapon : BehaviourNode
 {
     public override string name { get; set; } = "Searching weapon";
 
     BehaviourNodeGoTo nodeGoTo;
 
+    BlackBoard blackBoard;
     Weapon weaponFound;
 
 
-    public BehaviourNodeSearchWeapon(NavMeshAgent agent)
+    public BehaviourNodeSearchWeapon(NavMeshAgent agent, BlackBoard blackBoard)
     {
         nodeGoTo = new BehaviourNodeGoTo(agent, agent.transform.position);
+
+        this.blackBoard = blackBoard;
         name += "<br>" + nodeGoTo.name;
     }
 
@@ -44,6 +51,8 @@ public class BehaviourNodeSearchWeapon : BehaviourNode
         }
 
         weaponFound = nearestWeapon.GetComponent<Weapon>();
+
+        blackBoard.SetValue("Weapon", weaponFound);
 
         nodeGoTo.UpdateDestinationPosition(nearestWeapon.position);
         name = "Searching weapon<br>" + nodeGoTo.name;

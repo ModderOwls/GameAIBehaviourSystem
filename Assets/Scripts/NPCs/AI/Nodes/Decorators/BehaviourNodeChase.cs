@@ -1,8 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// BlackBoard interactions -
+/// GET: Weapon (Weapon), Target (Transform)
+/// </summary>
 public class BehaviourNodeChase : BehaviourNode
 {
     public override string name { get; set; } = "Chase";
@@ -12,16 +17,17 @@ public class BehaviourNodeChase : BehaviourNode
 
     float offset = 0.9f;
 
+    BlackBoard blackBoard;
     Weapon weapon;
 
     LayerMask layerObstacles;
 
 
-    public BehaviourNodeChase(NavMeshAgent agent, Transform target)
+    public BehaviourNodeChase(NavMeshAgent agent, BlackBoard blackBoard)
     {
-        this.target = target;
+        this.blackBoard = blackBoard;
 
-        nodeGoTo = new BehaviourNodeGoTo(agent, target.position);
+        nodeGoTo = new BehaviourNodeGoTo(agent, agent.nextPosition);
         name += "<br>" + nodeGoTo.name;
 
         layerObstacles = LayerMask.GetMask("Obstacles");
@@ -29,7 +35,9 @@ public class BehaviourNodeChase : BehaviourNode
 
     protected override void OnStart()
     {
-        weapon = nodeGoTo.agent.transform.GetChild(0).GetComponent<Weapon>();
+        weapon = blackBoard.GetValue<Weapon>("Weapon");
+
+        target = blackBoard.GetValue<Transform>("Target");
     }
 
     protected override void OnStop() { }
@@ -56,8 +64,6 @@ public class BehaviourNodeChase : BehaviourNode
             Debug.DrawRay(position, target.position - position, Color.yellow);
             if (Physics.Raycast(position, target.position - position, out hit, Vector3.Distance(position, target.position), layerObstacles))
             {
-                Debug.Log(hit.collider.name);
-
                 return NodeState.Failure;
             }
         }

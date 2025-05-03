@@ -4,18 +4,26 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// BlackBoard interactions -
+/// GET: HideObj (Transform)
+/// SET: Hide (bool)
+/// </summary>
 public class BehaviourNodeHide : BehaviourNode
 {
     public override string name { get; set; } = "Hiding";
 
     BehaviourNodeGoTo nodeGoTo;
 
+    string hideObj;
+    BlackBoard blackBoard;
     Obstacle obstacleFound;
     Transform hidingFrom;
 
-    public BehaviourNodeHide(NavMeshAgent agent, Transform hidingFrom)
+    public BehaviourNodeHide(NavMeshAgent agent, string hideObj, BlackBoard blackBoard)
     {
-        this.hidingFrom = hidingFrom;
+        this.hideObj = hideObj;
+        this.blackBoard = blackBoard;
 
         nodeGoTo = new BehaviourNodeGoTo(agent, agent.transform.position);
         name += "<br>" + nodeGoTo.name;
@@ -49,11 +57,16 @@ public class BehaviourNodeHide : BehaviourNode
 
         obstacleFound = nearestObstacle.GetComponent<Obstacle>();
 
+        hidingFrom = blackBoard.GetValue<Transform>(hideObj);
+
         nodeGoTo.UpdateDestinationPosition(nearestObstacle.position - (hidingFrom.position - nearestObstacle.position).normalized * (obstacleFound.radius + 0.5f));
         name = "Hiding<br>" + nodeGoTo.name;
     }
 
-    protected override void OnStop() { }
+    protected override void OnStop()
+    {
+        blackBoard.SetValue("Hide", false);
+    }
 
     protected override NodeState OnUpdate()
     {

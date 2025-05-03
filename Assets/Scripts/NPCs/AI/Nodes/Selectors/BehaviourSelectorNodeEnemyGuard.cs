@@ -35,12 +35,12 @@ public class BehaviourSelectorNodeEnemyGuard : BehaviourCompositeNode
         goToObject = new GameObject().transform;
         hideObject = new GameObject().transform;
 
-        children.Add(new BehaviourNodeHide(agent, hideObject));
+        //children.Add(new BehaviourNodeHide(agent, hideObject));
         children.Add(new BehaviourNodePatrol(agent, destinations));
-        children.Add(new BehaviourNodeSearchWeapon(agent));
-        children.Add(new BehaviourNodeThrowProjectile(agent.transform, goToObject, projectile));
-        children.Add(new BehaviourNodeChase(agent, goToObject));
-        children.Add(new BehaviourNodeAttack(agent.transform));
+        //children.Add(new BehaviourNodeSearchWeapon(agent, blackBoard));
+        //children.Add(new BehaviourNodeThrowProjectile(agent.transform, goToObject, projectile));
+        //children.Add(new BehaviourNodeChase(agent, goToObject));
+        //children.Add(new BehaviourNodeAttack(agent.transform));
 
         current = 1;
 
