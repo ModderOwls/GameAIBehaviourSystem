@@ -9,24 +9,19 @@ using UnityEngine.AI;
 /// GET: HideObj (Transform)
 /// SET: Hide (bool)
 /// </summary>
-public class BehaviourNodeHide : BehaviourNode
+public class BehaviourNodeHide : BehaviourNodeGoTo
 {
     public override string name { get; set; } = "Hiding";
-
-    BehaviourNodeGoTo nodeGoTo;
 
     string hideObj;
     BlackBoard blackBoard;
     Obstacle obstacleFound;
     Transform hidingFrom;
 
-    public BehaviourNodeHide(NavMeshAgent agent, string hideObj, BlackBoard blackBoard)
+    public BehaviourNodeHide(NavMeshAgent agent, string hideObj, BlackBoard blackBoard) : base(agent, agent.transform.position)
     {
         this.hideObj = hideObj;
         this.blackBoard = blackBoard;
-
-        nodeGoTo = new BehaviourNodeGoTo(agent, agent.transform.position);
-        name += "<br>" + nodeGoTo.name;
     }
 
     protected override void OnStart()
@@ -40,7 +35,7 @@ public class BehaviourNodeHide : BehaviourNode
             return;
         }
 
-        Vector3 position = nodeGoTo.agent.transform.position;
+        Vector3 position = agent.transform.position;
 
         Transform nearestObstacle = obstacles[0].transform;
         float nearestDistance = Vector3.Distance(position, nearestObstacle.position);
@@ -59,24 +54,12 @@ public class BehaviourNodeHide : BehaviourNode
 
         hidingFrom = blackBoard.GetValue<Transform>(hideObj);
 
-        nodeGoTo.UpdateDestinationPosition(nearestObstacle.position - (hidingFrom.position - nearestObstacle.position).normalized * (obstacleFound.radius + 0.5f));
-        name = "Hiding<br>" + nodeGoTo.name;
+        UpdateDestinationPosition(nearestObstacle.position - (hidingFrom.position - nearestObstacle.position).normalized * (obstacleFound.radius + 0.5f));
+        name = "Hiding<br>" + name;
     }
 
     protected override void OnStop()
     {
         blackBoard.SetValue("Hide", false);
-    }
-
-    protected override NodeState OnUpdate()
-    {
-        if (nodeGoTo == null) return NodeState.Failure;
-
-        if (nodeGoTo.Update() == NodeState.Success)
-        {
-            return NodeState.Success;
-        }
-
-        return NodeState.Running;
     }
 }

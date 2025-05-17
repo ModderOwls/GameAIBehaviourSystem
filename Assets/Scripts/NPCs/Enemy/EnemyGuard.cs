@@ -33,8 +33,8 @@ public class EnemyGuard : NpcAI
 
         //Patrolling behaviour. Checks for smokes and enemies.
         BehaviourNodePatrol patrol = new BehaviourNodePatrol(navAgent, destinations);
-        BehaviourInvertNode detectSmoke = new BehaviourInvertNode(new BehaviourConditionalNodeDetectSmoke(navAgent, blackBoard, patrol)); //Invert so it returns as a fail if it succeeds.
-        BehaviourConditionalNodeDetectEnemy detectEnemy = new BehaviourConditionalNodeDetectEnemy(navAgent, "Player", blackBoard, detectSmoke);
+        BehaviourInvertNode detectSmoke = new BehaviourInvertNode(new BehaviourConditionalNodeDetectSmoke(navAgent.transform, blackBoard, patrol)); //Invert so it returns as a fail if it succeeds.
+        BehaviourConditionalNodeDetectEnemy detectEnemy = new BehaviourConditionalNodeDetectEnemy(navAgent.transform, "Player", blackBoard, detectSmoke);
 
         selector.children.Add(detectEnemy);
 
@@ -51,7 +51,7 @@ public class EnemyGuard : NpcAI
         repeatAttackSequence.child = attackSequence;
 
         //Detect smoke again, now during the attack sequence.
-        BehaviourInvertNode detectSmokeChase = new BehaviourInvertNode(new BehaviourConditionalNodeDetectSmoke(navAgent, blackBoard, repeatAttackSequence));
+        BehaviourInvertNode detectSmokeChase = new BehaviourInvertNode(new BehaviourConditionalNodeDetectSmoke(navAgent.transform, blackBoard, repeatAttackSequence));
 
         //Upon losing the player, fail and restart the tree.
         //selector.children.Add(new BehaviourInvertNode(new BehaviourConditionalNodeLostSight(navAgent, blackBoard, attackSequence)));

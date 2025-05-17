@@ -27,7 +27,7 @@ public class AllyNinja : NpcAI
         blackBoard.SetValue("LayerEnemy", (LayerMask)LayerMask.GetMask("NPCs"));
 
         //Detects for the enemy Guard, if it finds it continues, otherwise follows infinitely.
-        selector.children.Add(new BehaviourConditionalNodeDetectEnemy(navAgent, "Enemy", blackBoard, new BehaviourNodeFollow(navAgent, player.transform)));
+        selector.children.Add(new BehaviourConditionalNodeDetectEnemy(navAgent.transform, "Enemy", blackBoard, new BehaviourNodeFollow(navAgent, player.transform)));
         
         //Hide and throw a smoke bomb.
         selector.children.Add(new BehaviourNodeHide(navAgent, "Target", blackBoard));

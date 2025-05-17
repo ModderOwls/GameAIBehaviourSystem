@@ -8,11 +8,10 @@ using UnityEngine.AI;
 /// BlackBoard interactions -
 /// GET: Weapon (Weapon), Target (Transform)
 /// </summary>
-public class BehaviourNodeChase : BehaviourNode
+public class BehaviourNodeChase : BehaviourNodeGoTo
 {
     public override string name { get; set; } = "Chase";
 
-    BehaviourNodeGoTo nodeGoTo;
     Transform target;
 
     float offset = 0.9f;
@@ -23,12 +22,9 @@ public class BehaviourNodeChase : BehaviourNode
     LayerMask layerObstacles;
 
 
-    public BehaviourNodeChase(NavMeshAgent agent, BlackBoard blackBoard)
+    public BehaviourNodeChase(NavMeshAgent agent, BlackBoard blackBoard) : base(agent, agent.nextPosition)
     {
         this.blackBoard = blackBoard;
-
-        nodeGoTo = new BehaviourNodeGoTo(agent, agent.nextPosition);
-        name += "<br>" + nodeGoTo.name;
 
         layerObstacles = LayerMask.GetMask("Obstacles");
     }
@@ -38,20 +34,20 @@ public class BehaviourNodeChase : BehaviourNode
         weapon = blackBoard.GetValue<Weapon>("Weapon");
 
         target = blackBoard.GetValue<Transform>("Target");
-    }
 
-    protected override void OnStop() { }
+        base.OnStart();
+    }
 
     protected override NodeState OnUpdate()
     {
         if (target == null) return NodeState.Failure;
 
-        Vector3 position = nodeGoTo.agent.transform.position;
+        Vector3 position = agent.transform.position;
 
-        nodeGoTo.UpdateDestinationPosition(target.position + (position - target.position).normalized * offset);
-        name = "Chase<br>" + nodeGoTo.name;
+        UpdateDestinationPosition(target.position + (position - target.position).normalized * offset);
+        name = "Chase<br>" + name;
 
-        nodeGoTo.Update();
+        base.OnUpdate();
 
         float distance = Vector3.Distance(position, target.position);
 

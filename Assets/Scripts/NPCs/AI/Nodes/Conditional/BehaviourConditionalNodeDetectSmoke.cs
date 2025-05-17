@@ -14,14 +14,14 @@ public class BehaviourConditionalNodeDetectSmoke : BehaviourDecoratorNode
 {
     public override string name { get; set; } = "Detecting Smoke";
 
-    NavMeshAgent agent;
+    Transform transform;
     BlackBoard blackBoard;
     LayerMask layerSmoke;
 
 
-    public BehaviourConditionalNodeDetectSmoke(NavMeshAgent agent, BlackBoard blackBoard, BehaviourNode child)
+    public BehaviourConditionalNodeDetectSmoke(Transform transform, BlackBoard blackBoard, BehaviourNode child)
     {
-        this.agent = agent;
+        this.transform = transform;
         this.blackBoard = blackBoard;
         this.child = child;
 
@@ -37,7 +37,7 @@ public class BehaviourConditionalNodeDetectSmoke : BehaviourDecoratorNode
         name = "Detecting Smoke<br>" + child.name;
 
         Collider[] hits = new Collider[3];
-        int count = Physics.OverlapSphereNonAlloc(agent.transform.position, 1f, hits, layerSmoke);
+        int count = Physics.OverlapSphereNonAlloc(transform.position, 1f, hits, layerSmoke);
 
         for (int i = 0; i < count; i++)
         {

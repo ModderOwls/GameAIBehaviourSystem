@@ -8,22 +8,17 @@ using UnityEngine.AI;
 /// BlackBoard interactions - 
 /// SET: Weapon (Weapon)
 /// </summary>
-public class BehaviourNodeSearchWeapon : BehaviourNode
+public class BehaviourNodeSearchWeapon : BehaviourNodeGoTo
 {
     public override string name { get; set; } = "Searching weapon";
-
-    BehaviourNodeGoTo nodeGoTo;
 
     BlackBoard blackBoard;
     Weapon weaponFound;
 
 
-    public BehaviourNodeSearchWeapon(NavMeshAgent agent, BlackBoard blackBoard)
+    public BehaviourNodeSearchWeapon(NavMeshAgent agent, BlackBoard blackBoard) : base(agent, agent.transform.position)
     {
-        nodeGoTo = new BehaviourNodeGoTo(agent, agent.transform.position);
-
         this.blackBoard = blackBoard;
-        name += "<br>" + nodeGoTo.name;
     }
 
     protected override void OnStart()
@@ -38,10 +33,10 @@ public class BehaviourNodeSearchWeapon : BehaviourNode
         }
 
         Transform nearestWeapon = weapons[0].transform;
-        float nearestDistance = Vector3.Distance(nodeGoTo.agent.transform.position, nearestWeapon.position);
+        float nearestDistance = Vector3.Distance(agent.transform.position, nearestWeapon.position);
         for (int i = 1; i < weapons.Length; i++)
         {
-            float distance = Vector3.Distance(nodeGoTo.agent.transform.position, weapons[i].transform.position);
+            float distance = Vector3.Distance(agent.transform.position, weapons[i].transform.position);
             if (nearestDistance > distance)
             {
                 nearestDistance = distance;
@@ -54,17 +49,13 @@ public class BehaviourNodeSearchWeapon : BehaviourNode
 
         blackBoard.SetValue("Weapon", weaponFound);
 
-        nodeGoTo.UpdateDestinationPosition(nearestWeapon.position);
-        name = "Searching weapon<br>" + nodeGoTo.name;
+        UpdateDestinationPosition(nearestWeapon.position);
+        name = "Searching weapon<br>" + name;
     }
-
-    protected override void OnStop() { }
 
     protected override NodeState OnUpdate()
     {
-        if (nodeGoTo == null) return NodeState.Failure;
-
-        if (nodeGoTo.Update() == NodeState.Success)
+        if (base.OnUpdate() == NodeState.Success)
         {
             GrabWeapon();
 
@@ -76,7 +67,7 @@ public class BehaviourNodeSearchWeapon : BehaviourNode
 
     private void GrabWeapon()
     {
-        weaponFound.transform.parent = nodeGoTo.agent.transform;
+        weaponFound.transform.parent = agent.transform;
         weaponFound.transform.localPosition = Vector2.zero;
         weaponFound.transform.localRotation = Quaternion.identity;
     }

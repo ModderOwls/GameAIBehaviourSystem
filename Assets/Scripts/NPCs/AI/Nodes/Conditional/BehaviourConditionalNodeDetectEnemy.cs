@@ -13,15 +13,15 @@ public class BehaviourConditionalNodeDetectEnemy : BehaviourDecoratorNode
 {
     public override string name { get; set; } = "Detecting Enemy";
 
-    NavMeshAgent agent;
+    Transform transform;
     string enemyTag;
     BlackBoard blackBoard;
     LayerMask layerEnemy;
 
 
-    public BehaviourConditionalNodeDetectEnemy(NavMeshAgent agent, string enemyTag, BlackBoard blackBoard, BehaviourNode child)
+    public BehaviourConditionalNodeDetectEnemy(Transform transform, string enemyTag, BlackBoard blackBoard, BehaviourNode child)
     {
-        this.agent = agent;
+        this.transform = transform;
         this.enemyTag = enemyTag;
         this.blackBoard = blackBoard;
         this.child = child;
@@ -38,7 +38,7 @@ public class BehaviourConditionalNodeDetectEnemy : BehaviourDecoratorNode
         name = "Detecting Enemy<br>" + child.name;
 
         Collider[] hits = new Collider[4];
-        int count = Physics.OverlapSphereNonAlloc(agent.transform.position, 3f, hits, layerEnemy);
+        int count = Physics.OverlapSphereNonAlloc(transform.position, 3f, hits, layerEnemy);
 
         for (int i = 0; i < count; i++)
         {

@@ -4,17 +4,15 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BehaviourNodePatrol : BehaviourNode
+public class BehaviourNodePatrol : BehaviourNodeGoTo
 {
     public override string name { get; set; } = "Patrol";
-
-    BehaviourNodeGoTo nodeGoTo;
 
     Transform[] destinations;
     int current;
 
 
-    public BehaviourNodePatrol(NavMeshAgent agent, Transform[] destinations)
+    public BehaviourNodePatrol(NavMeshAgent agent, Transform[] destinations) : base(agent, destinations[0].position)
     {
         if (destinations.Length == 0)
         {
@@ -26,28 +24,25 @@ public class BehaviourNodePatrol : BehaviourNode
         }
 
         this.destinations = destinations;
-
-        nodeGoTo = new BehaviourNodeGoTo(agent, destinations[0].position);
-        name += "<br>" + nodeGoTo.name;
     }
 
     protected override void OnStart()
     {
-        nodeGoTo.UpdateDestinationPosition(destinations[current].position);
-        name = "Patrol<br>" + nodeGoTo.name;
-    }
+        UpdateDestinationPosition(destinations[current].position);
+        name = "Patrol<br>" + name;
 
-    protected override void OnStop() { }
+        base.OnStart();
+    }
 
     protected override NodeState OnUpdate()
     {
-        if (nodeGoTo.Update() == NodeState.Success)
+        if (base.OnUpdate() == NodeState.Success)
         {
             current++;
             if (current > destinations.Length - 1) current = 0;
 
-            nodeGoTo.UpdateDestinationPosition(destinations[current].position);
-            name = "Patrol<br>" + nodeGoTo.name;
+            UpdateDestinationPosition(destinations[current].position);
+            name = "Patrol<br>" + name;
         }
 
         return NodeState.Running;
